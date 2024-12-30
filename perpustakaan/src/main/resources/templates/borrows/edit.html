@@ -1,0 +1,52 @@
+<html
+        xmlns:th="http://thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{fragments/layout}">
+<head>
+    <title>Edit Borrow</title>
+</head>
+<body class="d-flex flex-column h-100">
+<main class="flex-shrink-0">
+    <section layout:fragment="body" class="py-5">
+        <div class="container my-3">
+
+            <div class="row">
+                <div class="col-md-8 mx-auto rounded border p-4">
+                    <h2 class="text-center mb-5">Edit Peminjaman</h2>
+        
+                    <form role="form" method="post" th:action="@{/borrows/{borrowId}/edit(borrowId=${borrow.borrowId})}" th:object="${borrow}">
+                        <input type="hidden" th:field="*{bookId}" />
+                        <input type="hidden" th:field="*{user}" />
+                        <input type="hidden" th:field="*{tanggalPinjam}" />
+                        <input type="hidden" th:field="*{returned}" />
+                        <div class="row mb-3">
+                            <label for="tenggatKembali" class="col-sm-3 col-form-label">Tenggat Pengembalian</label>
+                            <div class="col-sm-8">
+                                <input
+                                    type="date"
+                                    class="form-control"
+                                    id="tenggatKembali"
+                                    name="tenggatKembali"
+                                    th:field="*{tenggatKembali}"
+                                    placeholder="Tanggal Kembali">
+                                <p th:if="${#fields.hasErrors('tenggatKembali')}" class="text-danger" th:errors="*{tenggatKembali}"></p>
+                            </div>
+                        </div>
+                    
+                        <div class="row">
+                            <div class="offset-sm-4 col-sm-4 d-grid">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                            <div class="col-sm-4 d-grid">
+                                <a class="btn btn-outline-primary" href="/borrows">Cancel</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+</main>
+</body>
+</html>

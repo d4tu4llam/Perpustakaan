@@ -1,0 +1,102 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{fragments/layout}">
+<head>
+    <title>Borrowed Books</title>
+</head>
+<body>
+<main class="flex-shrink-0">
+    <section layout:fragment="body" class="py-5">
+
+        <div class="container mt-5">
+            
+            <div th:if="${message != null}">
+                <p th:text="${message}"></p>
+            </div>
+            <!-- Table for Books Not Returned -->
+            <h3>Buku yang Belum Dikembalikan</h3>
+            <form th:action="@{/borrows/user/return}" method="post">
+                <input type="hidden" th:value="${userId}" name="userId" />
+                <table class="table table-hover table-striped table-bordered align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center">Pilih</th>
+                            <th scope="col" class="text-center">Judul</th>
+                            <th scope="col" class="text-center">Pengarang</th>
+                            <th scope="col" class="text-center">Penerbit</th>
+                            <th scope="col" class="text-center">Tahun Terbit</th>
+                            <th scope="col" class="text-center">Tenggat Pengembalian</th>
+                            <div sec:authorize="hasAuthority('ADMIN')">
+                                <th scope="col" class="text-center">Aksi</th>
+                            </div>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="buku : ${borrowedBooks}" th:if="${not buku.returned}" 
+                            th:classappend="'table-danger'">
+                            <td>
+                                <input type="checkbox" th:value="${buku.borrowId}" name="borrowIds" 
+                                       th:disabled="${buku.returned}" />
+                            </td>
+                            <td class="text-center" th:text="${buku.judul}"></td>
+                            <td class="text-center" th:text="${buku.pengarang}"></td>
+                            <td class="text-center" th:text="${buku.penerbit}"></td>
+                            <td class="text-center" th:text="${buku.tahunTerbit}"></td>
+                            <td class="text-center"
+                            th:text="${#temporals.format(buku.tenggatKembali, 'dd-MM-yyyy')}">
+                            </td>
+                            <div  sec:authorize="hasAuthority('ADMIN')">
+                                <td><a class="btn btn-primary btn-sm" th:href="@{/borrows/{borrowId}/edit(borrowId=${buku.borrowId})}">Edit</a></td>    
+                            </div>
+
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="submit" th:disabled="${#lists.isEmpty(borrowedBooks)}" class="btn btn-success">Kembalikan Buku</button>
+            </form>
+
+            <br><br>
+
+            <!-- Table for Books Already Returned -->
+            <h3>Buku yang Sudah Dikembalikan</h3>
+            <table class="table table-hover table-striped table-bordered align-middle">
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-center">Judul</th>
+                        <th scope="col" class="text-center">Pengarang</th>
+                        <th scope="col" class="text-center">Penerbit</th>
+                        <th scope="col" class="text-center">Tahun Terbit</th>
+                        <th scope="col" class="text-center">Tanggal Pinjam</th>
+                        <th scope="col" class="text-center">Tanggal Pengembalian</th>
+                        <th scope="col" class="text-center">Denda</th>
+                        
+                        
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="buku : ${borrowedBooks}" th:if="${buku.returned}" 
+                        th:classappend="'table-success'">
+                        <td class="text-center" th:text="${buku.judul}"></td>
+                        <td class="text-center" th:text="${buku.pengarang}"></td>
+                        <td class="text-center" th:text="${buku.penerbit}"></td>
+                        <td class="text-center" th:text="${buku.tahunTerbit}"></td>
+                        <td class="text-center"
+                        th:text="${#temporals.format(buku.tanggalPinjam, 'dd-MM-yyyy')}">
+                        </td>
+                        <td class="text-center"
+                        th:text="${#temporals.format(buku.tanggalPengembalian, 'dd-MM-yyyy')}">
+                        </td>
+                        <td class="text-center" th:text="'Rp. ' + ${buku.denda}"></td>
+                        
+                            
+                        
+                        
+                    </tr>
+                </tbody>
+            </table>
+
+            <a class="btn btn-primary" th:href="@{/bukus}">Kembali ke Daftar Buku</a>
+        </div>
+    </section>
+</main>
+</body>
+</html>

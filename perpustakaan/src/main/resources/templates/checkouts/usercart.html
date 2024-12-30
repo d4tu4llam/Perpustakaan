@@ -1,0 +1,50 @@
+<html
+        xmlns:th="http://thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{fragments/layout}">
+<head>
+    <title>User's Cart List</title>
+</head>
+<body class="d-flex flex-column h-100">
+<main class="flex-shrink-0">
+    <section layout:fragment="body" class="py-5">
+        <div class="container px-5 my-5">
+            <a class="btn btn-primary mb-3" href="/checkouts">Kembali</a>
+            <h1 class="mb-4">Cart Buku User</h1>
+
+            <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+            <form th:action="@{/admin/checkout}" method="post">
+                <input type="hidden" th:value="${userId}" name="userId" />
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Pilih</th>
+                            <th>Judul</th>
+                            <th>Pengarang</th>
+                            <th>Penerbit</th>
+                            <th>Tahun Terbit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="buku : ${bukuDtos}">
+                            <td><input type="checkbox" th:value="${buku.id}" name="bukuIds" /></td>
+                            <td th:text="${buku.judul}"></td>
+                            <td th:text="${buku.pengarang}"></td>
+                            <td th:text="${buku.penerbit}"></td>
+                            <td th:text="${buku.tahunTerbit}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-success" th:disabled="${#lists.isEmpty(bukuDtos)}">
+                    Checkout
+                </button>
+                
+
+            </form>
+
+        </div>
+    </section>
+</main>
+</body>
+</html>
