@@ -1,0 +1,49 @@
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>Cart - Daftar Buku yang Ingin Dipinjam</title>
+</head>
+<body class="d-flex flex-column h-100">
+<main class="flex-shrink-0">
+    <section layout:fragment="body" class="py-5">
+        <div class="container mt-5">
+            <h2 class="text-center mb-4">Daftar Buku di Keranjang</h2>
+            
+            <div th:if="${errorMessage}">
+                <p style="color:red;" th:text="${errorMessage}"></p>
+            </div>
+
+            <a class="btn btn-primary" th:href="@{/bukus}">Kembali ke Daftar Buku</a>
+            <table class="table table-hover table-striped table-bordered align-middle">
+                <thead class="table-blue">
+                    <tr>
+                        <th scope="col" class="text-center">ID</th>
+                        <th scope="col" class="text-center">Judul</th>
+                        <th scope="col" class="text-center">Pengarang</th>
+                        <th scope="col" class="text-center">Penerbit</th>
+                        <th scope="col" class="text-center">Tahun Terbit</th>
+                        <th scope="col" class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="cartItem : ${cartItems}">
+                        <td th:text="${cartItem.id}" class="text-center"></td>
+                        <td th:text="${cartItem.judul}" class="text-center"></td>
+                        <td th:text="${cartItem.pengarang}" class="text-center"></td>
+                        <td th:text="${cartItem.penerbit}" class="text-center"></td>
+                        <td th:text="${cartItem.tahunTerbit}" class="text-center"></td>
+                        <td class="text-center"> 
+                            <a class="btn btn-danger" th:href="@{/carts/remove/{bukuId}(bukuId=${cartItem.id})}" href="/carts/remove/{bukuId}(bukuId=${cartItem.id})">
+                        Remove
+                        </a>
+                        </td>
+                    </tr>
+                </tbody>
+                
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>
