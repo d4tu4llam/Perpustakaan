@@ -188,6 +188,7 @@ public class CartServiceImpl implements CartService {
         }
 
         for (Buku buku : bukusToCheckout) {
+
             if (!buku.getAvailable()) {
                 throw new RuntimeException("Buku " + buku.getJudul() + " tidak tersedia.");
             }

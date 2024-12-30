@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.karyaanakbangsa.perpustakaan.dto.BukuDto;
 import com.karyaanakbangsa.perpustakaan.dto.UserCartDto;
@@ -42,20 +43,33 @@ public class AdminController {
     }
 
     @GetMapping("/checkouts/cart/{userId}")
-    public String viewCartByUser(@PathVariable int userId, Model model) {
-        List<BukuDto> bukuDtos = cartService.getCartItemsByUserId(userId);
-        model.addAttribute("bukuDtos", bukuDtos);
+    public String viewCartByUser(@PathVariable int userId, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            List<BukuDto> bukuDtos = cartService.getCartItemsByUserId(userId);
+
+            model.addAttribute("bukuDtos", bukuDtos);
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+
         return "checkouts/usercart"; // Nama template HTML
     }
 
     @PostMapping("/admin/checkout")
     public String checkoutBuku(
             @RequestParam("userId") int userId,
-            @RequestParam(value = "bukuIds", required = false) List<Integer> bukuIds) {
-        if (bukuIds == null) {
-            return "redirect:/checkouts/cart/" + userId; // Redirect kembali ke halaman cart
+            @RequestParam(value = "bukuIds", required = false) List<Integer> bukuIds,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            if (bukuIds == null) {
+                return "redirect:/checkouts/cart/" + userId; // Redirect kembali ke halaman cart
+            }
+            cartService.checkoutBooks(userId, bukuIds);
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
-        cartService.checkoutBooks(userId, bukuIds);
+
         return "redirect:/checkouts/cart/" + userId; // Redirect kembali ke halaman cart
     }
 
