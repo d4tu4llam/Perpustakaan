@@ -27,6 +27,9 @@
                     <br>
                     <br>
                     <div class="mt-3">
+                        <div th:if="${errorMessage}">
+                            <p style="color:red;" th:text="${errorMessage}"></p>
+                        </div>
                         <a class="btn btn-primary" href="/bukus">
                             Masuk Perpus
                         </a>
