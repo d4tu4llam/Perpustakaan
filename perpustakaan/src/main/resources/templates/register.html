@@ -60,6 +60,16 @@
                         </div>
                         <p th:if="${#fields.hasErrors('email')}" class="text-danger"></p>
                         
+                        <div class="form-group" id="userPhonenumberField">
+                            <label>No Telepon</label>
+                            <input
+                                    type="tel"
+                                    class="form-control"
+                                    placeholder="No Telepon"
+                                    th:field="*{noTelepon}">
+                        </div>
+                        <p th:if="${#fields.hasErrors('noTelepon')}" class="text-danger"></p>
+
                         <div class="form-group">
                             <label>Password</label>
                             <input
@@ -83,6 +93,16 @@
                             </select>
                         </div>
                         <p th:if="${#fields.hasErrors('role')}" class="text-danger"></p>
+
+                        <div class="form-group" id="adminNipField">
+                            <label>NIP</label>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="NIP"
+                                    th:field="*{nip}">
+                        </div>
+                        <p th:if="${nip != null}" class="text-danger" th:text="${nipError}"></p>
 
                         <div class="form-group" id="adminCodeField">
                             <label>Admin Code</label>

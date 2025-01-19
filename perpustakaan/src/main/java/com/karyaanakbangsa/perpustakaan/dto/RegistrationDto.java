@@ -14,6 +14,10 @@ public class RegistrationDto {
     private String password;
     @NotEmpty
     private String role;
-    
+
+    private String noTelepon;
+
+    private String nip;
+
     private String adminCode;
 }

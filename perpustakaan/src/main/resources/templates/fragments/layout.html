@@ -45,15 +45,23 @@
         document.addEventListener("DOMContentLoaded", function () {
             const roleSelect = document.getElementById('roleSelect');
             const adminCodeField = document.getElementById('adminCodeField');
+            const adminNipField = document.getElementById('adminNipField');
+            const userPhonenumberField = document.getElementById('userPhonenumberField');
     
             // Fungsi untuk menyembunyikan/memunculkan field adminCode
             const toggleAdminCodeField = () => {
                 if (roleSelect.value === 'ADMIN') {
                     adminCodeField.style.display = 'block';
-                } else {
+                    adminNipField.style.display = 'block';
+                    userPhonenumberField.style.display = 'none';
+                    userPhonenumberField.querySelector('input').value = '';
+                  } else {
                     adminCodeField.style.display = 'none';
+                    adminNipField.style.display = 'none';
+                    userPhonenumberField.style.display = 'block';
                     // Kosongkan field adminCode jika bukan ADMIN
                     adminCodeField.querySelector('input').value = '';
+                    adminNipField.querySelector('input').value = '';
                 }
             };
     

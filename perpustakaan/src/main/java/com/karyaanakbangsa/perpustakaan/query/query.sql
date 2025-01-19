@@ -41,7 +41,7 @@ INSERT INTO books (available, judul, max_pinjam, penerbit, pengarang, tahun_terb
 (true, 'The Wright Brothers', 6, 'Simon & Schuster', 'David McCullough', 2015, 5);
 
 
-INSERT INTO roles (name) VALUES
+INSERT INTO roles (role) VALUES
 ('ADMIN'),
 ('USER');
 

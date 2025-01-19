@@ -1,24 +1,18 @@
 package com.karyaanakbangsa.perpustakaan.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "roles")
+@Builder
+@Entity
+@Table(name = "roles")
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String name;
-    @ManyToMany(mappedBy = "roles")
-    private List<UserEntity> users = new ArrayList<>();
+    @Column(name = "role", nullable = false)
+    private String role;
 }

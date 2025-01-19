@@ -1,29 +1,24 @@
 package com.karyaanakbangsa.perpustakaan.models;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "users")
-public class UserEntity {
+@SuperBuilder
+@Inheritance(strategy = InheritanceType.JOINED)
+@Entity
+@Table(name = "users")
+public abstract class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String username;
     private String email;
     private String password;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "users_roles", joinColumns = {
-            @JoinColumn(name = "user_id", referencedColumnName = "id") }, inverseJoinColumns = {
-                    @JoinColumn(name = "role_id", referencedColumnName = "id") })
-    private List<Role> roles = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id")
+    private Role role;
 }

@@ -1,6 +1,5 @@
 package com.karyaanakbangsa.perpustakaan.service.impl;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,12 +10,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.karyaanakbangsa.perpustakaan.dto.RegistrationDto;
 import com.karyaanakbangsa.perpustakaan.dto.UserDto;
+import com.karyaanakbangsa.perpustakaan.models.Admin;
 import com.karyaanakbangsa.perpustakaan.models.Cart;
+import com.karyaanakbangsa.perpustakaan.models.Member;
 import com.karyaanakbangsa.perpustakaan.models.Role;
 import com.karyaanakbangsa.perpustakaan.models.UserEntity;
 import com.karyaanakbangsa.perpustakaan.repository.CartRepository;
+import com.karyaanakbangsa.perpustakaan.repository.MemberRepository;
 import com.karyaanakbangsa.perpustakaan.repository.RoleRepository;
 import com.karyaanakbangsa.perpustakaan.repository.UserRepository;
+import com.karyaanakbangsa.perpustakaan.repository.AdminRepository;
 import com.karyaanakbangsa.perpustakaan.service.UserService;
 
 @Service
@@ -26,40 +29,74 @@ public class UserServiceImpl implements UserService {
     private RoleRepository roleRepository;
     private CartRepository cartRepository;
     private PasswordEncoder passwordEncoder;
+    private MemberRepository MemberRepository;
+    private AdminRepository AdminRepository;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, CartRepository cartRepository,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder, MemberRepository MemberRepository, AdminRepository AdminRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.cartRepository = cartRepository;
         this.passwordEncoder = passwordEncoder;
+        this.MemberRepository = MemberRepository;
+        this.AdminRepository = AdminRepository;
     }
 
     @Override
     @Transactional
-    public void saveUser(RegistrationDto registrationDto, String roleName) {
+    public void saveMember(RegistrationDto registrationDto, String roleName) {
 
         // buat dan isi entity
-        UserEntity user = new UserEntity();
-        user.setUsername(registrationDto.getUsername());
-        user.setEmail(registrationDto.getEmail());
-        user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
-
+        Member member = new Member();
+        member.setUsername(registrationDto.getUsername());
+        member.setEmail(registrationDto.getEmail());
+        member.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
+        member.setNoTelepon(registrationDto.getNoTelepon());
+        member.setRole(roleRepository.findByRole(roleName).get());
         // assign role berdasarkan input
-        Role role = roleRepository.findByName(roleName.toUpperCase());
+        Role role = roleRepository.findFirstByRole(roleName.toUpperCase());
         if (role == null) {
             throw new RuntimeException("Role '" + roleName + "' not found");
         }
-        user.setRoles(Arrays.asList(role));
+        member.setRole((role));
 
         // simpan user
-        userRepository.save(user);
+        MemberRepository.save(member);
 
         // kalau role USER buat cart
         if (roleName.equalsIgnoreCase("USER")) {
             Cart cart = new Cart();
-            cart.setCreatedBy(user); // simpan user sebagai pembuat cart
+            cart.setCreatedBy(member); // simpan user sebagai pembuat cart
+            cartRepository.save(cart);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void saveAdmin(RegistrationDto registrationDto, String roleName) {
+
+        // buat dan isi entity
+        Admin admin = new Admin();
+        admin.setUsername(registrationDto.getUsername());
+        admin.setEmail(registrationDto.getEmail());
+        admin.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
+        admin.setNip(registrationDto.getNip());
+        admin.setRole(roleRepository.findByRole(roleName).get());
+        // assign role berdasarkan input
+        Role role = roleRepository.findFirstByRole(roleName.toUpperCase());
+        if (role == null) {
+            throw new RuntimeException("Role '" + roleName + "' not found");
+        }
+        admin.setRole((role));
+
+        // simpan user
+        AdminRepository.save(admin);
+
+        // kalau role USER buat cart
+        if (roleName.equalsIgnoreCase("USER")) {
+            Cart cart = new Cart();
+            cart.setCreatedBy(admin); // simpan user sebagai pembuat cart
             cartRepository.save(cart);
         }
     }
@@ -77,7 +114,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getAllUser() {
         // ambil users dengan role admin
-        List<UserEntity> admins = userRepository.findByRolesName("USER");
+        List<UserEntity> admins = userRepository.findByRole(roleRepository.findByRole("USER").get());
         // Map to DTO
         return admins.stream()
                 .map(user -> new UserDto(user.getId(), user.getUsername()))

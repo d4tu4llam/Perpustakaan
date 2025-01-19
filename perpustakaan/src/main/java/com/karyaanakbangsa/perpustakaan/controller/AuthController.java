@@ -63,11 +63,17 @@ public class AuthController {
                 model.addAttribute("adminCodeError", "Invalid admin code");
                 return "register";
             }
+            try {
+                userService.saveAdmin(user, user.getRole());
+                return "redirect:/login?success";
+            } catch (Exception e) {
+                return "redirect:/register?fail";
+            }
         }
 
         // Simpan user
         try {
-            userService.saveUser(user, user.getRole());
+            userService.saveMember(user, user.getRole());
             return "redirect:/login?success";
         } catch (Exception e) {
             return "redirect:/register?fail";

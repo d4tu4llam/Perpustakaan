@@ -1,6 +1,7 @@
 package com.karyaanakbangsa.perpustakaan.security;
 
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -26,11 +27,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity user = userRepository.findFirstByUsername(username);
         if (user != null) {
+            List<SimpleGrantedAuthority> roles = new ArrayList<>();
+            roles.add(new SimpleGrantedAuthority(user.getRole().getRole()));
             User authUser = new User(
                     user.getUsername(),
                     user.getPassword(),
-                    user.getRoles().stream().map((role) -> new SimpleGrantedAuthority(role.getName()))
-                            .collect(Collectors.toList()));
+                    roles);
             return authUser;
         } else {
             throw new UsernameNotFoundException("Invalid username or password");

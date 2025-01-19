@@ -7,7 +7,9 @@ import com.karyaanakbangsa.perpustakaan.dto.UserDto;
 import com.karyaanakbangsa.perpustakaan.models.UserEntity;
 
 public interface UserService {
-    void saveUser(RegistrationDto registrationDto, String roleName);
+    void saveMember(RegistrationDto registrationDto, String roleName);
+
+    void saveAdmin(RegistrationDto registrationDto, String roleName);
 
     UserEntity findByEmail(String email);
 
